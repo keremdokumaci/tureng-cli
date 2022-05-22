@@ -9,6 +9,11 @@ It supports 4 language set which described in below.
 - spanish-english
 - french-english
 
+# Flags
+
+- --language
+- --count -`represents the count of translated words.`
+
 # Commands
 
 You can execute any command and custom commands with using "-c" flag. For example:
@@ -26,5 +31,3 @@ You can execute any command and custom commands with using "-c" flag. For exampl
 # Sample Usage
 
     "tureng-cli --language turkish-english --count 3"
-
-`"count" represents the count of translated words.`

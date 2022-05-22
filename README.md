@@ -15,7 +15,7 @@ You can execute any command and custom commands with using "-c" flag. For exampl
 
     "tureng (turkish-english) >> -c **command here**"
 
-## Special Commands
+## Custom Commands
 
 - update-language
 

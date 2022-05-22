@@ -13,7 +13,7 @@ It supports 4 language set which described in below.
 
 You can execute any command and custom commands with using "-c" flag. For example:
 
-    "tureng (turkish-english) >> -c **command here**"
+    tureng (turkish-english) >> -c **command here**
 
 ## Custom Commands
 

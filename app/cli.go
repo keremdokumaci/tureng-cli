@@ -75,9 +75,13 @@ func (c *TurengCli) Run() {
 	for {
 		c.showPrompt()
 		input := c.getUserInput()
+		if input == "" {
+			continue
+		}
 
 		if c.isCommandText(input) {
-			err := c.runCommand(input)
+			command := strings.ReplaceAll(input, "-c", "")
+			err := c.runCommand(strings.TrimLeft(command, " "))
 			if err != nil && err.Error() != fmt.Sprintf(`exec: "%s": executable file not found in $PATH`, input) {
 				fmt.Println(err.Error())
 				continue
@@ -112,14 +116,12 @@ func (c *TurengCli) getUserInput() string {
 }
 
 func (c *TurengCli) isCommandText(text string) bool {
-	return strings.Split(text, "")[0] == "["
+	return len(strings.Split(text, "-c")) > 1
 }
 
 func (c *TurengCli) runCommand(text string) error {
-	text = text[1:]
-	text = text[:len(text)-1]
 
-	commands := strings.Split(text, " ")
+	commands := strings.Split(text, "-c")
 	cmd := commands[0]
 
 	switch cmd {

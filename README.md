@@ -9,6 +9,16 @@ It supports 4 language set which described in below.
 - spanish-english
 - french-english
 
+# Commands
+
+You can execute any command and custom commands with using "-c" flag. For example:
+
+    "tureng (turkish-english) >> -c **command here**"
+
+## Special Commands
+
+- update-language
+
 # Installation
 
     "go install github.com/keremdokumaci/tureng-cli@v0.1.0"

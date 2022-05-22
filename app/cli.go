@@ -120,8 +120,8 @@ func (c *TurengCli) isCommandText(text string) bool {
 }
 
 func (c *TurengCli) runCommand(text string) error {
-
-	commands := strings.Split(text, "-c")
+	text = strings.ReplaceAll(text, "-c", "")
+	commands := strings.Split(text, " ")
 	cmd := commands[0]
 
 	switch cmd {

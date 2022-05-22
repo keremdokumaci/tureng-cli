@@ -15,6 +15,6 @@ It supports 4 language set which described in below.
 
 # Sample Usage
 
-tureng-cli --language turkish-english --count 3
+    "tureng-cli --language turkish-english --count 3"
 
-"count" represents the count of translated words.
+`"count" represents the count of translated words.`

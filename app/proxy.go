@@ -15,6 +15,13 @@ type TurengProxy struct {
 	language string
 }
 
+type LanguageSet struct {
+	SourceLanguageShortForm string
+	DestLanguageShortForm   string
+	SourceLanguage          string
+	DestLanguage            string
+}
+
 func NewTurengProxy(language string) *TurengProxy {
 	return &TurengProxy{
 		language: language,
@@ -24,40 +31,39 @@ func NewTurengProxy(language string) *TurengProxy {
 	}
 }
 
-func (p *TurengProxy) Query(word string) (string, error) {
+func (p *TurengProxy) Query(word string, ls LanguageSet) ([]string, error) {
 	url := fmt.Sprintf("https://tureng.com/en/%s/%s", p.language, word)
 
 	resp, err := p.client.Get(url)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer resp.Body.Close()
 	_, err = ioutil.ReadAll(resp.Body)
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-
-	var response []string
 
 	doc, err := goquery.NewDocument(url)
 	selection := doc.Find("table.table-hover.table-striped.searchResultsTable")
 
+	var translations []string
+
 	rows := selection.Children().First().Children()
 	rows.EachWithBreak(func(i int, s *goquery.Selection) bool {
-		if i > 3 {
+		if i > 2 {
 			s.Children().Each(func(k int, child *goquery.Selection) {
-				if k == 3 {
-					response = append(response, child.Text())
+				if child.HasClass(ls.SourceLanguageShortForm) || child.HasClass(ls.DestLanguageShortForm) {
+					text := child.Children().First().Text()
+					if strings.ToLower(text) != strings.ToLower(word) {
+						translations = append(translations, text)
+					}
 				}
 			})
 		}
 
-		if len(response) == 5 {
-			return false
-		}
-
 		return true
 	})
-	return strings.Join(response, ","), nil
+	return translations, nil
 }

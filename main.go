@@ -7,7 +7,10 @@ import (
 )
 
 func main() {
-	language := flag.String("language", "", "language")
-	cli := app.NewCli(app.Language(*language))
+	language := flag.String("language", "", "--language")
+	maxNumberOfWord := flag.Int("count", 1, "--count")
+	flag.Parse()
+
+	cli := app.NewCli(app.Language(*language), *maxNumberOfWord)
 	cli.Run()
 }

@@ -18,21 +18,55 @@ const (
 	ENFR Language = "french-english"
 )
 
+var languageMap map[Language]LanguageSet
+
 type Command string
 
 const (
 	UPDATE_LANGUAGE Command = "update-language"
-	CLEAR           Command = "clear"
 )
 
 type TurengCli struct {
-	proxy    *TurengProxy
-	language Language `validate:"required"`
+	proxy     *TurengProxy
+	language  Language `validate:"required"`
+	wordCount int
 }
 
-func NewCli(language Language) *TurengCli {
+func NewCli(language Language, count int) *TurengCli {
 	cli := &TurengCli{}
+	if !isSupportedLanguage(string(language)) {
+		fmt.Println("unsupported language")
+		os.Exit(1)
+	}
+
+	languageMap = make(map[Language]LanguageSet)
+	languageMap[TREN] = LanguageSet{
+		SourceLanguageShortForm: "tr",
+		SourceLanguage:          "Turkish",
+		DestLanguageShortForm:   "en",
+		DestLanguage:            "English",
+	}
+	languageMap[ENDE] = LanguageSet{
+		SourceLanguageShortForm: "en",
+		SourceLanguage:          "English",
+		DestLanguageShortForm:   "de",
+		DestLanguage:            "German",
+	}
+	languageMap[ENES] = LanguageSet{
+		SourceLanguageShortForm: "tr",
+		SourceLanguage:          "Turkish",
+		DestLanguageShortForm:   "es",
+		DestLanguage:            "Spanish",
+	}
+	languageMap[ENFR] = LanguageSet{
+		SourceLanguageShortForm: "tr",
+		SourceLanguage:          "Turkish",
+		DestLanguageShortForm:   "fr",
+		DestLanguage:            "French",
+	}
+
 	cli.language = language
+	cli.wordCount = count
 	cli.proxy = NewTurengProxy(string(language))
 	return cli
 }
@@ -49,11 +83,18 @@ func (c *TurengCli) Run() {
 				continue
 			}
 		} else {
-			result, err := c.proxy.Query(input)
+			result, err := c.proxy.Query(input, languageMap[c.language])
 			if err != nil {
 				fmt.Println(err.Error())
 			}
-			fmt.Println(result)
+
+			for i, t := range result {
+				if i == c.wordCount {
+					break
+				}
+
+				fmt.Println(t)
+			}
 		}
 	}
 }
@@ -93,6 +134,15 @@ func (c *TurengCli) runCommand(text string) error {
 }
 
 func (c *TurengCli) updateLanguage(language string) error {
+	if !isSupportedLanguage(language) {
+		return errors.New("unsupported language !")
+	}
+
+	c.language = Language(language)
+	return nil
+}
+
+func isSupportedLanguage(language string) bool {
 	switch language {
 	case string(TREN):
 		break
@@ -103,9 +153,8 @@ func (c *TurengCli) updateLanguage(language string) error {
 	case string(ENFR):
 		break
 	default:
-		return errors.New("unsupported language")
+		return false
 	}
 
-	c.language = Language(language)
-	return nil
+	return true
 }

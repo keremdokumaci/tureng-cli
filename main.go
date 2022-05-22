@@ -1,8 +1,13 @@
 package main
 
-import "github.com/keremdokumaci/tureng-cli/app"
+import (
+	"flag"
+
+	"github.com/keremdokumaci/tureng-cli/app"
+)
 
 func main() {
-	cli := app.NewCli("turkish-english")
+	language := flag.String("language", "", "language")
+	cli := app.NewCli(app.Language(*language))
 	cli.Run()
 }

@@ -12,7 +12,7 @@ It supports 4 language set which described in below.
 # Flags
 
 - --language
-- --count -`represents the count of translated words.`
+- --count `represents the count of translated words.`
 
 # Commands
 

@@ -21,7 +21,7 @@ You can execute any command and custom commands with using "-c" flag. For exampl
 
 # Installation
 
-    "go install github.com/keremdokumaci/tureng-cli@v0.1.0"
+    go install github.com/keremdokumaci/tureng-cli@v0.1.0
 
 # Sample Usage
 

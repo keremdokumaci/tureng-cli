@@ -11,7 +11,7 @@ It supports 4 language set which described in below.
 
 # Installation
 
-`go install github.com/keremdokumaci/tureng-cli@v0.1.0`
+    "go install github.com/keremdokumaci/tureng-cli@v0.1.0"
 
 # Sample Usage
 

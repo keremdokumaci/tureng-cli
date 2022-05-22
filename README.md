@@ -8,7 +8,6 @@ It supports 4 language set which described in below.
 - german-english
 - spanish-english
 - french-english
--
 
 # Installation
 

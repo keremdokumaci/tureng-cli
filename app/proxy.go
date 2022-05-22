@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 type TurengProxy struct {
@@ -29,11 +32,32 @@ func (p *TurengProxy) Query(word string) (string, error) {
 		return "", err
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	_, err = ioutil.ReadAll(resp.Body)
 
 	if err != nil {
 		return "", err
 	}
 
-	return string(body), nil
+	var response []string
+
+	doc, err := goquery.NewDocument(url)
+	selection := doc.Find("table.table-hover.table-striped.searchResultsTable")
+
+	rows := selection.Children().First().Children()
+	rows.EachWithBreak(func(i int, s *goquery.Selection) bool {
+		if i > 3 {
+			s.Children().Each(func(k int, child *goquery.Selection) {
+				if k == 3 {
+					response = append(response, child.Text())
+				}
+			})
+		}
+
+		if len(response) == 5 {
+			return false
+		}
+
+		return true
+	})
+	return strings.Join(response, ","), nil
 }

@@ -31,4 +31,4 @@ You can execute any command and custom commands with using "$" flag. For example
 
 # Sample Usage
 
-    "tureng-cli --language turkish-english --count 3"
+    tureng-cli --language turkish-english --count 3

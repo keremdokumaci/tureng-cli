@@ -24,6 +24,11 @@ type Command string
 
 const (
 	UPDATE_LANGUAGE Command = "update-language"
+	CLEAR           Command = "clear"
+)
+
+const (
+	COMMAND_DELIMETER = "$"
 )
 
 type TurengCli struct {
@@ -80,7 +85,7 @@ func (c *TurengCli) Run() {
 		}
 
 		if c.isCommandText(input) {
-			command := strings.ReplaceAll(input, "-c", "")
+			command := strings.ReplaceAll(input, COMMAND_DELIMETER, "")
 			err := c.runCommand(strings.TrimLeft(command, " "))
 			if err != nil && err.Error() != fmt.Sprintf(`exec: "%s": executable file not found in $PATH`, input) {
 				fmt.Println(err.Error())
@@ -116,32 +121,45 @@ func (c *TurengCli) getUserInput() string {
 }
 
 func (c *TurengCli) isCommandText(text string) bool {
-	return len(strings.Split(text, "-c")) > 1
+	return len(strings.Split(text, COMMAND_DELIMETER)) > 1
 }
 
 func (c *TurengCli) runCommand(text string) error {
-	text = strings.ReplaceAll(text, "-c", "")
+	text = strings.ReplaceAll(text, COMMAND_DELIMETER, "")
 	commands := strings.Split(text, " ")
 	cmd := commands[0]
 
 	switch cmd {
 	case string(UPDATE_LANGUAGE):
-		return c.updateLanguage(commands[1])
+		return c.updateLanguage(text)
+	case string(CLEAR):
+		return c.clearTerminal()
 	default:
-		c := exec.Command(text)
-		c.Stdout = os.Stdout
-		err := c.Run()
-		return err
+		return nil
 	}
 }
 
-func (c *TurengCli) updateLanguage(language string) error {
+func (c *TurengCli) updateLanguage(languageCmd string) error {
+	arr := strings.Split(languageCmd, string(UPDATE_LANGUAGE))
+	if len(arr) < 2 {
+		return errors.New("must specify supported language !")
+	}
+
+	language := arr[1]
 	if !isSupportedLanguage(language) {
 		return errors.New("unsupported language !")
 	}
 
 	c.language = Language(language)
 	return nil
+}
+
+func (c *TurengCli) clearTerminal() error {
+	cmd := exec.Command("clear")
+	cmd.Stdout = os.Stdout
+	err := cmd.Run()
+
+	return err
 }
 
 func isSupportedLanguage(language string) bool {

@@ -16,13 +16,14 @@ It supports 4 language set which described in below.
 
 # Commands
 
-You can execute any command and custom commands with using "-c" flag. For example:
+You can execute any command and custom commands with using "$" flag. For example:
 
-    tureng (turkish-english) >> -c **command here**
+    tureng (turkish-english) >> $ **command here**
 
-## Custom Commands
+### Commands
 
-- update-language
+- update-language **language**
+- clear
 
 # Installation
 
